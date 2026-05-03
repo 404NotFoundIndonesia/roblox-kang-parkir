@@ -15,13 +15,13 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 1. Project Bootstrap & Framework
 
-- [ ] **P1** Create `src/shared/Knit.lua`: require the Wally-installed Knit package from `ReplicatedStorage.Packages.Knit` and return it. All other files that need Knit require this module — never require Packages directly.
+- [x] **P1** Create `src/shared/Knit.lua`: require the Wally-installed Knit package from `ReplicatedStorage.Packages.Knit` and return it. All other files that need Knit require this module — never require Packages directly.
 
-- [ ] **P1** Create `src/server/init.server.lua`: require every file inside `src/server/services/` using a loop over `script.Services:GetChildren()`, then call `Knit.Start()`. If `Knit.Start()` rejects, print the error and call `game:SetAttribute("BootFailed", true)` so the client can detect it.
+- [x] **P1** Create `src/server/init.server.lua`: require every file inside `src/server/services/` using a loop over `script.Services:GetChildren()`, then call `Knit.Start()`. If `Knit.Start()` rejects, print the error and call `game:SetAttribute("BootFailed", true)` so the client can detect it.
 
-- [ ] **P1** Create `src/client/init.client.lua`: require every file inside `src/client/controllers/` using a loop over `script.Controllers:GetChildren()`, then call `Knit.Start()`. Wait for `Knit.Start()` to resolve before the player character loads (use `Players.LocalPlayer.CharacterAdded:Wait()` after Knit resolves).
+- [x] **P1** Create `src/client/init.client.lua`: require every file inside `src/client/controllers/` using a loop over `script.Controllers:GetChildren()`, then call `Knit.Start()`. Wait for `Knit.Start()` to resolve before the player character loads (use `Players.LocalPlayer.CharacterAdded:Wait()` after Knit resolves).
 
-- [ ] **P1** Create `src/shared/Constants.lua`: export a frozen table (use `table.freeze`) with the following keys. Every numeric game parameter lives here — no magic numbers anywhere else:
+- [x] **P1** Create `src/shared/Constants.lua`: export a frozen table (use `table.freeze`) with the following keys. Every numeric game parameter lives here — no magic numbers anywhere else:
   ```
   WhistleBaseRadius        = 10       -- studs
   WhistleStatScale         = 1.5      -- studs per stat point
@@ -89,7 +89,7 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
   }
   ```
 
-- [ ] **P1** Create `src/shared/Types.lua`: export Luau type definitions used across server and client. Include:
+- [x] **P1** Create `src/shared/Types.lua`: export Luau type definitions used across server and client. Include:
   - `PlayerData`: `{ BankedEarnings: number, SkillTree: SkillTreeData, OwnedCosmetics: {string}, OwnedGamepasses: {string}, TotalSessions: number, Stats: StatsData, SchemaVersion: number }`
   - `SkillTreeData`: `{ WhistleLevel: number, StrengthLevel: number, SpeedLevel: number, StaminaLevel: number }` (each level 0–3)
   - `StatsData`: `{ ThievesInterrupted: number, RivalsRagdolled: number, TotalParked: number }`
@@ -99,7 +99,7 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
   - `NPCState`: string union `"Roam" | "Navigate" | "Interact" | "Flee" | "Ragdoll" | "Despawn"`
   - `SessionPhase`: string union `"Lobby" | "WarmUp" | "PeakShift" | "RushHour" | "ShiftEnd" | "PostSession"`
 
-- [ ] **P1** Create `src/shared/Enums.lua`: mirror the string unions from `Types.lua` as string-keyed tables so runtime code can do `Enums.VehicleState.Parked` instead of spelling the string. Use `table.freeze` on each table.
+- [x] **P1** Create `src/shared/Enums.lua`: mirror the string unions from `Types.lua` as string-keyed tables so runtime code can do `Enums.VehicleState.Parked` instead of spelling the string. Use `table.freeze` on each table.
 
 ---
 

@@ -1,38 +1,32 @@
 {
-  "name": "CoffeeShopPlayground",
+  "name": "kang-parkir",
   "tree": {
     "$className": "DataModel",
-
     "ServerScriptService": {
       "$className": "ServerScriptService",
       "Server": {
-        "$path": "src/Server"
-      },
-      "Tests": {
-        "$path": "tests"
+        "$path": "src/server"
       }
     },
-
     "StarterPlayer": {
       "$className": "StarterPlayer",
       "StarterPlayerScripts": {
         "$className": "StarterPlayerScripts",
         "Client": {
-          "$path": "src/Client"
-        }
-      },
-      "StarterCharacterScripts": {
-        "$className": "StarterCharacterScripts",
-        "Character": {
-          "$path": "src/Character"
+          "$path": "src/client"
         }
       }
     },
-
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
       "Shared": {
-        "$path": "src/Shared"
+        "$path": "src/shared"
+      },
+      "Packages": {
+        "$path": "Packages"
+      },
+      "Assets": {
+        "$path": "src/assets"
       }
     }
   }

@@ -105,21 +105,21 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 2. Data Persistence
 
-- [ ] **P1** In `src/server/services/DataService.lua`, create a Knit Service named `"DataService"`. On `KnitInit`, call `ProfileService.GetProfileStore("KangParkir_v1", defaultData)` where `defaultData` matches the `PlayerData` type from `Types.lua` with all-zero/empty initial values and `SchemaVersion = 1`. Store the returned ProfileStore in a module-level variable.
+- [x] **P1** In `src/server/services/DataService.lua`, create a Knit Service named `"DataService"`. On `KnitInit`, call `ProfileService.GetProfileStore("KangParkir_v1", defaultData)` where `defaultData` matches the `PlayerData` type from `Types.lua` with all-zero/empty initial values and `SchemaVersion = 1`. Store the returned ProfileStore in a module-level variable.
 
-- [ ] **P1** In `DataService`, on `Players.PlayerAdded`: call `ProfileStore:LoadProfileAsync("Player_" .. player.UserId)`. If the profile returns `nil` (load failed), kick the player with `player:Kick("Data failed to load. Rejoin.")`. If loaded, call `profile:AddUserId(player.UserId)` and `profile:Reconcile()` to fill missing keys from the default template. Store the profile in a `_profiles[player.UserId]` dictionary.
+- [x] **P1** In `DataService`, on `Players.PlayerAdded`: call `ProfileStore:LoadProfileAsync("Player_" .. player.UserId)`. If the profile returns `nil` (load failed), kick the player with `player:Kick("Data failed to load. Rejoin.")`. If loaded, call `profile:AddUserId(player.UserId)` and `profile:Reconcile()` to fill missing keys from the default template. Store the profile in a `_profiles[player.UserId]` dictionary.
 
-- [ ] **P1** In `DataService`, on `Players.PlayerRemoving`: call `_profiles[player.UserId]:Release()` if the profile exists. Remove the entry from `_profiles`.
+- [x] **P1** In `DataService`, on `Players.PlayerRemoving`: call `_profiles[player.UserId]:Release()` if the profile exists. Remove the entry from `_profiles`.
 
-- [ ] **P1** In `DataService`, start a `task.spawn` loop that runs every `Constants.BankAutoSaveInterval` seconds and calls `profile:Save()` for every player currently in `_profiles`.
+- [x] **P1** In `DataService`, start a `task.spawn` loop that runs every `Constants.BankAutoSaveInterval` seconds and calls `profile:Save()` for every player currently in `_profiles`.
 
-- [ ] **P1** In `DataService`, expose `GetProfile(player: Player) -> Profile | nil`: returns `_profiles[player.UserId]`. Returns `nil` if the player's data has not finished loading yet — callers must handle `nil`.
+- [x] **P1** In `DataService`, expose `GetProfile(player: Player) -> Profile | nil`: returns `_profiles[player.UserId]`. Returns `nil` if the player's data has not finished loading yet — callers must handle `nil`.
 
-- [ ] **P1** In `DataService`, expose `AddBankedEarnings(player: Player, amount: number) -> ()`: guards `amount > 0`, then does `profile.Data.BankedEarnings += amount`. Fires `Remotes.PayoutReceived:FireClient(player, profile.Data.BankedEarnings)` after update so the client HUD can refresh.
+- [x] **P1** In `DataService`, expose `AddBankedEarnings(player: Player, amount: number) -> ()`: guards `amount > 0`, then does `profile.Data.BankedEarnings += amount`. Fires `Remotes.PayoutReceived:FireClient(player, profile.Data.BankedEarnings)` after update so the client HUD can refresh.
 
-- [ ] **P1** In `DataService`, expose `DeductBankedEarnings(player: Player, amount: number) -> success: boolean`: if `profile.Data.BankedEarnings >= amount` then deducts and returns `true`, otherwise does nothing and returns `false`.
+- [x] **P1** In `DataService`, expose `DeductBankedEarnings(player: Player, amount: number) -> success: boolean`: if `profile.Data.BankedEarnings >= amount` then deducts and returns `true`, otherwise does nothing and returns `false`.
 
-- [ ] **P2** In `DataService`, expose `GetLeaderboardTop10() -> { {name: string, value: number} }`: reads `OrderedDataStore` keyed `"BankedEarnings_Leaderboard"`, returns top 10 entries as a sorted array. Cache the result in a module-level variable; only re-fetch if the cache is older than `Constants.LeaderboardCacheInterval` seconds. Never yield inside a `RemoteEvent` callback — pre-fetch on a background task.
+- [x] **P2** In `DataService`, expose `GetLeaderboardTop10() -> { {name: string, value: number} }`: reads `OrderedDataStore` keyed `"BankedEarnings_Leaderboard"`, returns top 10 entries as a sorted array. Cache the result in a module-level variable; only re-fetch if the cache is older than `Constants.LeaderboardCacheInterval` seconds. Never yield inside a `RemoteEvent` callback — pre-fetch on a background task.
 
 ---
 

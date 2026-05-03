@@ -125,23 +125,23 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 3. Session & Zone Management
 
-- [ ] **P1** In `src/server/services/SessionService.lua`, create a Knit Service named `"SessionService"`. Store the current phase as a module-level variable initialized to `Enums.SessionPhase.Lobby`. Expose `GetPhase() -> SessionPhase`.
+- [x] **P1** In `src/server/services/SessionService.lua`, create a Knit Service named `"SessionService"`. Store the current phase as a module-level variable initialized to `Enums.SessionPhase.Lobby`. Expose `GetPhase() -> SessionPhase`.
 
-- [ ] **P1** In `SessionService`, expose `StartSession()`: transitions phase through `WarmUp → PeakShift → RushHour → ShiftEnd → PostSession` using `task.delay` with durations from `Constants`. After each transition, fire `Remotes.SessionPhaseChanged:FireAllClients(newPhase)` so clients can update HUD timer display. At `ShiftEnd`, call `EconomyService:AutoBankAll()`.
+- [x] **P1** In `SessionService`, expose `StartSession()`: transitions phase through `WarmUp → PeakShift → RushHour → ShiftEnd → PostSession` using `task.delay` with durations from `Constants`. After each transition, fire `Remotes.SessionPhaseChanged:FireAllClients(newPhase)` so clients can update HUD timer display. At `ShiftEnd`, call `EconomyService:AutoBankAll()`.
 
-- [ ] **P1** In `SessionService`, broadcast the remaining seconds every 1 second using a `task.spawn` loop while not in `Lobby` or `PostSession`: fire `Remotes.SessionPhaseChanged:FireAllClients(currentPhase, remainingSeconds)` so clients keep the Shift Tracker accurate.
+- [x] **P1** In `SessionService`, broadcast the remaining seconds every 1 second using a `task.spawn` loop while not in `Lobby` or `PostSession`: fire `Remotes.SessionPhaseChanged:FireAllClients(currentPhase, remainingSeconds)` so clients keep the Shift Tracker accurate.
 
-- [ ] **P1** In `src/server/services/ZoneService.lua`, create a Knit Service named `"ZoneService"`. On `KnitStart`, collect all `BasePart`s tagged `"ParkingZone"` using `CollectionService:GetTagged("ParkingZone")` and store them in a `_zones` array. Store a `_zoneOwners` dictionary mapping zone Part → Player.
+- [x] **P1** In `src/server/services/ZoneService.lua`, create a Knit Service named `"ZoneService"`. On `KnitStart`, collect all `BasePart`s tagged `"ParkingZone"` using `CollectionService:GetTagged("ParkingZone")` and store them in a `_zones` array. Store a `_zoneOwners` dictionary mapping zone Part → Player.
 
-- [ ] **P1** In `ZoneService`, expose `AssignZone(player: Player) -> Part | nil`: picks the first unassigned zone in `_zones`, writes it to `_zoneOwners`, returns the Part. If all zones are taken, returns `nil` (player cannot join mid-game in v1.0).
+- [x] **P1** In `ZoneService`, expose `AssignZone(player: Player) -> Part | nil`: picks the first unassigned zone in `_zones`, writes it to `_zoneOwners`, returns the Part. If all zones are taken, returns `nil` (player cannot join mid-game in v1.0).
 
-- [ ] **P1** In `ZoneService`, on `Players.PlayerRemoving`: find the zone owned by the leaving player in `_zoneOwners`, remove the mapping, and do not reassign it to others in the same session.
+- [x] **P1** In `ZoneService`, on `Players.PlayerRemoving`: find the zone owned by the leaving player in `_zoneOwners`, remove the mapping, and do not reassign it to others in the same session.
 
-- [ ] **P1** In `ZoneService`, expose `IsInZone(zone: Part, worldPosition: Vector3) -> boolean`: returns `true` if `worldPosition` falls within the zone Part's bounding box (use `zone.CFrame:PointToObjectSpace(worldPosition)` and compare against half-sizes).
+- [x] **P1** In `ZoneService`, expose `IsInZone(zone: Part, worldPosition: Vector3) -> boolean`: returns `true` if `worldPosition` falls within the zone Part's bounding box (use `zone.CFrame:PointToObjectSpace(worldPosition)` and compare against half-sizes).
 
-- [ ] **P1** In `ZoneService`, expose `GetZoneOwner(zone: Part) -> Player | nil`: returns `_zoneOwners[zone]`.
+- [x] **P1** In `ZoneService`, expose `GetZoneOwner(zone: Part) -> Player | nil`: returns `_zoneOwners[zone]`.
 
-- [ ] **P1** In `ZoneService`, run a `task.spawn` loop checking every 1 second for vehicles in a zone not owned by their aggroed player. If a vehicle has been in a foreign zone for more than `Constants.TrespasEjectDelay` seconds, call `VehicleService:ReturnToTraffic(vehicleId)`.
+- [x] **P1** In `ZoneService`, run a `task.spawn` loop checking every 1 second for vehicles in a zone not owned by their aggroed player. If a vehicle has been in a foreign zone for more than `Constants.TrespasEjectDelay` seconds, call `VehicleService:ReturnToTraffic(vehicleId)`.
 
 ---
 

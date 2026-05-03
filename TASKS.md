@@ -147,35 +147,35 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 4. Traffic & Spawn System
 
-- [ ] **P1** In `src/server/services/TrafficService.lua`, create a Knit Service named `"TrafficService"`. On `KnitStart`, read all vehicle template models from `ReplicatedStorage.Assets.Vehicles` (one model per vehicle type, named exactly `"Scooter"`, `"SportBike"`, `"FamilyCar"`, `"AggroSUV"`, `"Supercar"`). Store them in a `_templates` dictionary keyed by vehicle type string.
+- [x] **P1** In `src/server/services/TrafficService.lua`, create a Knit Service named `"TrafficService"`. On `KnitStart`, read all vehicle template models from `ReplicatedStorage.Assets.Vehicles` (one model per vehicle type, named exactly `"Scooter"`, `"SportBike"`, `"FamilyCar"`, `"AggroSUV"`, `"Supercar"`). Store them in a `_templates` dictionary keyed by vehicle type string.
 
-- [ ] **P1** In `TrafficService`, on `KnitStart`, after `SessionService` emits the `WarmUp` phase, begin a spawn loop using `task.spawn`. Each tick: if `_aliveCount < _maxVehicles`, pick a vehicle type using `Constants.SpawnWeights` (implement weighted random as: generate a random 0–1 float, walk the cumulative weight table, return the first type whose cumulative weight exceeds the float). Clone the template, position it at the `TrafficSpawnNode` Part's `CFrame`, assign a unique `VehicleId` string (`"V_" .. HttpService:GenerateGUID(false)`), call `VehicleService:RegisterVehicle(vehicleId, model, vehicleType)`. Increment `_aliveCount`. Wait a spawn interval read from `Constants` before next tick.
+- [x] **P1** In `TrafficService`, on `KnitStart`, after `SessionService` emits the `WarmUp` phase, begin a spawn loop using `task.spawn`. Each tick: if `_aliveCount < _maxVehicles`, pick a vehicle type using `Constants.SpawnWeights` (implement weighted random as: generate a random 0–1 float, walk the cumulative weight table, return the first type whose cumulative weight exceeds the float). Clone the template, position it at the `TrafficSpawnNode` Part's `CFrame`, assign a unique `VehicleId` string (`"V_" .. HttpService:GenerateGUID(false)`), call `VehicleService:RegisterVehicle(vehicleId, model, vehicleType)`. Increment `_aliveCount`. Wait a spawn interval read from `Constants` before next tick.
 
-- [ ] **P1** In `TrafficService`, expose `OnVehicleDestroyed(vehicleId: string) -> ()`: decrements `_aliveCount`. Called by `VehicleService` when a vehicle is destroyed.
+- [x] **P1** In `TrafficService`, expose `OnVehicleDestroyed(vehicleId: string) -> ()`: decrements `_aliveCount`. Called by `VehicleService` when a vehicle is destroyed.
 
-- [ ] **P1** In `TrafficService`, expose `FlashMobBurst() -> ()`: for 10 seconds (`Constants.FlashMobDuration`), override `_currentSpawnWeights` to `{ Scooter = Constants.FlashMobScooterWeight, SportBike = 0.05 }` and set spawn interval to 0.3 seconds to inject at least `Constants.FlashMobVehicleCount` vehicles. After 10 seconds, restore original weights and interval.
+- [x] **P1** In `TrafficService`, expose `FlashMobBurst() -> ()`: for 10 seconds (`Constants.FlashMobDuration`), override `_currentSpawnWeights` to `{ Scooter = Constants.FlashMobScooterWeight, SportBike = 0.05 }` and set spawn interval to 0.3 seconds to inject at least `Constants.FlashMobVehicleCount` vehicles. After 10 seconds, restore original weights and interval.
 
-- [ ] **P1** In `src/server/services/VehicleService.lua`, create a Knit Service named `"VehicleService"`. Maintain a `_vehicles` dictionary keyed by `vehicleId` string, each entry: `{ model: Model, vehicleType: string, state: VehicleState, ownerPlayer: Player | nil, aggroPlayer: Player | nil, pathAgent: PathfindingService agent }`.
+- [x] **P1** In `src/server/services/VehicleService.lua`, create a Knit Service named `"VehicleService"`. Maintain a `_vehicles` dictionary keyed by `vehicleId` string, each entry: `{ model: Model, vehicleType: string, state: VehicleState, ownerPlayer: Player | nil, aggroPlayer: Player | nil, pathAgent: PathfindingService agent }`.
 
-- [ ] **P1** In `VehicleService`, expose `RegisterVehicle(vehicleId, model, vehicleType)`: adds entry to `_vehicles` with `state = "Traffic"`, starts pathfinding toward `TrafficDespawnNode` using `PathfindingService:CreatePath()` and `path:ComputeAsync()`. Begin moving the vehicle's `HumanoidRootPart` (or `PrimaryPart`) along waypoints each `Heartbeat`.
+- [x] **P1** In `VehicleService`, expose `RegisterVehicle(vehicleId, model, vehicleType)`: adds entry to `_vehicles` with `state = "Traffic"`, starts pathfinding toward `TrafficDespawnNode` using `PathfindingService:CreatePath()` and `path:ComputeAsync()`. Begin moving the vehicle's `HumanoidRootPart` (or `PrimaryPart`) along waypoints each `Heartbeat`.
 
-- [ ] **P1** In `VehicleService`, expose `SetAggro(vehicleId: string, player: Player) -> ()`: sets `state = "Aggroed"`, sets `aggroPlayer = player`. Recomputes pathfinding target to the `Part` named `ZoneEntrance_[zoneIndex]` that corresponds to the player's assigned zone. If the vehicle was previously aggroed by a different player, fires `Remotes.TugOfWarStart:FireClient` (handled by `TugOfWarService`).
+- [x] **P1** In `VehicleService`, expose `SetAggro(vehicleId: string, player: Player) -> ()`: sets `state = "Aggroed"`, sets `aggroPlayer = player`. Recomputes pathfinding target to the `Part` named `ZoneEntrance_[zoneIndex]` that corresponds to the player's assigned zone. If the vehicle was previously aggroed by a different player, fires `Remotes.TugOfWarStart:FireClient` (handled by `TugOfWarService`).
 
-- [ ] **P1** In `VehicleService`, expose `ClearAggro(vehicleId: string) -> ()`: sets `state = "Traffic"`, sets `aggroPlayer = nil`. Recomputes pathfinding back to `TrafficDespawnNode`.
+- [x] **P1** In `VehicleService`, expose `ClearAggro(vehicleId: string) -> ()`: sets `state = "Traffic"`, sets `aggroPlayer = nil`. Recomputes pathfinding back to `TrafficDespawnNode`.
 
-- [ ] **P1** In `VehicleService`, expose `SetAtEntrance(vehicleId: string) -> ()`: sets `state = "AtEntrance"`. Stops movement. Starts a `task.delay(Constants.VehicleEntranceTimeout, ...)` that calls `ReturnToTraffic(vehicleId)` if state is still `"AtEntrance"` when the delay fires.
+- [x] **P1** In `VehicleService`, expose `SetAtEntrance(vehicleId: string) -> ()`: sets `state = "AtEntrance"`. Stops movement. Starts a `task.delay(Constants.VehicleEntranceTimeout, ...)` that calls `ReturnToTraffic(vehicleId)` if state is still `"AtEntrance"` when the delay fires.
 
-- [ ] **P1** In `VehicleService`, expose `SetDragging(vehicleId: string, player: Player) -> ()`: sets `state = "Dragging"`, `ownerPlayer = player`. Cancels the entrance timeout.
+- [x] **P1** In `VehicleService`, expose `SetDragging(vehicleId: string, player: Player) -> ()`: sets `state = "Dragging"`, `ownerPlayer = player`. Cancels the entrance timeout.
 
-- [ ] **P1** In `VehicleService`, expose `SetParked(vehicleId: string, player: Player, cf: CFrame) -> ()`: sets `state = "Parked"`. Anchors the model. Records `ownerPlayer`. Stores the final `CFrame`.
+- [x] **P1** In `VehicleService`, expose `SetParked(vehicleId: string, player: Player, cf: CFrame) -> ()`: sets `state = "Parked"`. Anchors the model. Records `ownerPlayer`. Stores the final `CFrame`.
 
-- [ ] **P1** In `VehicleService`, expose `SetDamaged(vehicleId: string) -> ()`: sets `state = "Damaged"`. Sets `Humanoid.WalkSpeed = 0` on the vehicle's Humanoid (if present) or halts pathfinding directly. Voids payout by setting an `_isPenalized[vehicleId] = true` flag checked by `EconomyService`.
+- [x] **P1** In `VehicleService`, expose `SetDamaged(vehicleId: string) -> ()`: sets `state = "Damaged"`. Sets `Humanoid.WalkSpeed = 0` on the vehicle's Humanoid (if present) or halts pathfinding directly. Voids payout by setting an `_isPenalized[vehicleId] = true` flag checked by `EconomyService`.
 
-- [ ] **P1** In `VehicleService`, expose `ReturnToTraffic(vehicleId: string) -> ()`: resets `state = "Traffic"`, `aggroPlayer = nil`, `ownerPlayer = nil`. Recomputes pathfinding to `TrafficDespawnNode`.
+- [x] **P1** In `VehicleService`, expose `ReturnToTraffic(vehicleId: string) -> ()`: resets `state = "Traffic"`, `aggroPlayer = nil`, `ownerPlayer = nil`. Recomputes pathfinding to `TrafficDespawnNode`.
 
-- [ ] **P1** In `VehicleService`, expose `GetState(vehicleId: string) -> VehicleState | nil`.
+- [x] **P1** In `VehicleService`, expose `GetState(vehicleId: string) -> VehicleState | nil`.
 
-- [ ] **P1** In `VehicleService`, when a vehicle's `PrimaryPart` touches `TrafficDespawnNode`: destroy the model, call `TrafficService:OnVehicleDestroyed(vehicleId)`, remove from `_vehicles`.
+- [x] **P1** In `VehicleService`, when a vehicle's `PrimaryPart` touches `TrafficDespawnNode`: destroy the model, call `TrafficService:OnVehicleDestroyed(vehicleId)`, remove from `_vehicles`.
 
 ---
 

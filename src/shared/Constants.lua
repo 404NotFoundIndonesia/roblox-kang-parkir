@@ -78,6 +78,11 @@ local Constants = table.freeze({
 	BankAutoSaveInterval     = 60,   -- seconds between ProfileService auto-saves
 	LeaderboardCacheInterval = 300,  -- seconds between leaderboard refreshes
 
+	-- Traffic / spawn
+	TrafficSpawnInterval        = 3.5,  -- seconds between normal vehicle spawns
+	TrafficVehiclesPerPlayer    = 8,    -- max live vehicles per connected player (cap = this × playerCount, max 40)
+	TrafficFlashMobInterval     = 0.3,  -- spawn interval override during FlashMob burst
+
 	-- Shop prices (shift currency)
 	ShopPrices = table.freeze({
 		SpikeStrip  = 50,

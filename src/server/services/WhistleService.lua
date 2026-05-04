@@ -38,6 +38,13 @@ local function getWhistleRadius(player: Player): number
 	local profile = DataService:GetProfile(player)
 	local level   = profile and profile.Data.SkillTree.WhistleLevel or 0
 	local radius  = Constants.WhistleBaseRadius + level * Constants.WhistleStatScale
+
+	-- VIPWhistle gamepass: +20% radius before the hard cap.
+	local okM, MonetizationService = pcall(Knit.GetService, Knit, "MonetizationService")
+	if okM and MonetizationService and MonetizationService:OwnsPass(player, "VIPWhistle") then
+		radius = radius * 1.2
+	end
+
 	return math.min(radius, Constants.WhistleMaxRadius)
 end
 

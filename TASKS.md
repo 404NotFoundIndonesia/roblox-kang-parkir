@@ -374,29 +374,29 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 12. Monetization & Gamepasses
 
-- [ ] **P2** In `src/server/services/MonetizationService.lua`, create a Knit Service named `"MonetizationService"`. On `KnitStart`, connect `MarketplaceService.ProcessReceipt` to `_HandleReceipt`. Note: `ProcessReceipt` must return `Enum.ProductPurchaseDecision.PurchaseGranted` or `NotProcessedYet` — never error silently.
+- [x] **P2** In `src/server/services/MonetizationService.lua`, create a Knit Service named `"MonetizationService"`. On `KnitStart`, connect `MarketplaceService.ProcessReceipt` to `_HandleReceipt`. Note: `ProcessReceipt` must return `Enum.ProductPurchaseDecision.PurchaseGranted` or `NotProcessedYet` — never error silently.
 
-- [ ] **P2** In `MonetizationService`, implement `_HandleReceipt(receiptInfo) -> Enum.ProductPurchaseDecision`:
+- [x] **P2** In `MonetizationService`, implement `_HandleReceipt(receiptInfo) -> Enum.ProductPurchaseDecision`:
   - Find the player by `receiptInfo.PlayerId`. If player is not in server, return `NotProcessedYet` (Roblox will retry).
   - Match `receiptInfo.ProductId` to known Developer Product IDs (store IDs in `Constants` as `ProductId_EnergyDrink` and `ProductId_BribeMoney`). Call the appropriate grant function. Return `PurchaseGranted`.
 
-- [ ] **P2** In `MonetizationService`, implement `_GrantEnergyDrink(player)`: call `_AddInventory(player, "EnergyDrink", 1)`. Also immediately call `StaminaService:SetFull(player)` if the player wants to use it instantly (fire `Remotes.ItemGranted:FireClient(player, "EnergyDrink")`; client chooses when to consume via `Remotes.ConsumeItem`).
+- [x] **P2** In `MonetizationService`, implement `_GrantEnergyDrink(player)`: call `_AddInventory(player, "EnergyDrink", 1)`. Also immediately call `StaminaService:SetFull(player)` if the player wants to use it instantly (fire `Remotes.ItemGranted:FireClient(player, "EnergyDrink")`; client chooses when to consume via `Remotes.ConsumeItem`).
 
-- [ ] **P2** In `MonetizationService`, implement `_GrantBribeMoney(player)`: call `_AddInventory(player, "BribeMoney", 1)`.
+- [x] **P2** In `MonetizationService`, implement `_GrantBribeMoney(player)`: call `_AddInventory(player, "BribeMoney", 1)`.
 
-- [ ] **P2** In `MonetizationService`, on each player join: call `MarketplaceService:UserOwnsGamePassAsync(player.UserId, Constants.GamepassId_VIPWhistle)` and `Constants.GamepassId_Landlord` (wrap in `pcall`). Store results in a `_ownedPasses[uid]` table. Expose `OwnsPass(player, passName) -> boolean`.
+- [x] **P2** In `MonetizationService`, on each player join: call `MarketplaceService:UserOwnsGamePassAsync(player.UserId, Constants.GamepassId_VIPWhistle)` and `Constants.GamepassId_Landlord` (wrap in `pcall`). Store results in a `_ownedPasses[uid]` table. Expose `OwnsPass(player, passName) -> boolean`.
 
-- [ ] **P2** In `WhistleService`, when computing whistle radius: check `MonetizationService:OwnsPass(player, "VIPWhistle")` — if true, multiply final radius by `1.2`.
+- [x] **P2** In `WhistleService`, when computing whistle radius: check `MonetizationService:OwnsPass(player, "VIPWhistle")` — if true, multiply final radius by `1.2`.
 
-- [ ] **P2** In `MonetizationService`, maintain `_inventory` dictionary keyed by `player.UserId`: `{ SpikeStrip: number, EnergyDrink: number, BribeMoney: number }`. Expose `GetInventory(player) -> table`, `ConsumeItem(player, itemName) -> boolean` (deducts 1, returns false if 0), `AddItem(player, itemName, count)`.
+- [x] **P2** In `MonetizationService`, maintain `_inventory` dictionary keyed by `player.UserId`: `{ SpikeStrip: number, EnergyDrink: number, BribeMoney: number }`. Expose `GetInventory(player) -> table`, `ConsumeItem(player, itemName) -> boolean` (deducts 1, returns false if 0), `AddItem(player, itemName, count)`.
 
-- [ ] **P2** In `MonetizationService`, connect `Remotes.ShopPurchase.OnServerEvent` with args `(player, itemName: string)`:
+- [x] **P2** In `MonetizationService`, connect `Remotes.ShopPurchase.OnServerEvent` with args `(player, itemName: string)`:
   - Validate `itemName` is one of `"SpikeStrip"`, `"EnergyDrink"`, `"BribeMoney"`.
   - Look up price in `Constants.ShopPrices[itemName]`.
   - Call `EconomyService:SpendShiftCurrency(player, price)` — if false, fire `Remotes.ShopPurchase:FireClient(player, itemName, false, "INSUFFICIENT_FUNDS")`.
   - On success: call `AddItem(player, itemName, 1)`. Fire `Remotes.ShopPurchase:FireClient(player, itemName, true, GetInventory(player))`.
 
-- [ ] **P2** In `MonetizationService`, connect `Remotes.ConsumeItem.OnServerEvent` with args `(player, itemName: string)`:
+- [x] **P2** In `MonetizationService`, connect `Remotes.ConsumeItem.OnServerEvent` with args `(player, itemName: string)`:
   - Validate `itemName`. Call `ConsumeItem(player, itemName)` — if false, ignore.
   - Dispatch effect: `"EnergyDrink"` → `StaminaService:SetFull(player)`. `"BribeMoney"` → `PoliceService:ClearTargeting(player)`. `"SpikeStrip"` → handled separately via `Remotes.PlaceStrip`.
 

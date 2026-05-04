@@ -404,43 +404,43 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 13. Client UI Controllers
 
-- [ ] **P1** In `src/client/controllers/HUDController.lua`, create a Knit Controller named `"HUDController"`. On `KnitStart`:
+- [x] **P1** In `src/client/controllers/HUDController.lua`, create a Knit Controller named `"HUDController"`. On `KnitStart`:
   - Get references to `HUD.ShiftTracker.TimeLabel`, `HUD.ShiftTracker.UnbankedLabel`, `HUD.ShiftTracker.BankedLabel`, `HUD.StaminaBar.Fill`.
   - Listen to `Remotes.SessionPhaseChanged`: update `TimeLabel.Text` with remaining seconds formatted as `"MM:SS"` using `string.format("%02d:%02d", math.floor(s/60), s%60)`.
   - Listen to `Remotes.PayoutReceived` with args `(delta, newUnbanked)`: tween `UnbankedLabel` text to `newUnbanked`. Show a floating `"+N"` `TextLabel` above the HUD that tweens upward and fades in 1.5 seconds using `TweenService`.
   - Listen to `Remotes.PenaltyApplied` with args `(delta, newUnbanked)`: tween `UnbankedLabel` text. Show a floating `"-N"` in red using the same tween pattern.
   - Listen to `Remotes.StaminaUpdated` (UnreliableRemoteEvent): set `StaminaBar.Fill.Size = UDim2.new(newValue/maxStamina, 0, 1, 0)`. Change `BackgroundColor3` based on thresholds: `>60%` = green, `30–60%` = yellow, `<30%` = red.
 
-- [ ] **P1** In `src/client/controllers/ThreatController.lua`, create a Knit Controller named `"ThreatController"`. On `KnitStart`:
+- [x] **P1** In `src/client/controllers/ThreatController.lua`, create a Knit Controller named `"ThreatController"`. On `KnitStart`:
   - Listen to `Remotes.ThreatInZone` (UnreliableRemoteEvent) with args `(thiefId, thiefWorldPos: Vector3)`.
   - On each receive: compute screen direction using `workspace.Camera:WorldToViewportPoint(thiefWorldPos)`. If the result's `z < 0` or position is outside `[0,1]` screen UV, the threat is off-screen — show the edge arrow. Compute the angle from screen center to the clamped screen position using `math.atan2`. Set `ThreatArrow.Rotation` to that angle in degrees. Set `ThreatArrow.Visible = true`.
   - Scale `ThreatArrow.ImageTransparency` inversely with `(thiefWorldPos - hrp.Position).Magnitude`: at 5 studs = 0 (fully opaque), at 25 studs = 0.7.
   - If no `ThreatInZone` event is received for 2 seconds, hide the arrow.
 
-- [ ] **P1** In `src/client/controllers/TugOfWarController.lua`, create a Knit Controller named `"TugOfWarController"`. On `KnitStart`:
+- [x] **P1** In `src/client/controllers/TugOfWarController.lua`, create a Knit Controller named `"TugOfWarController"`. On `KnitStart`:
   - Listen to `Remotes.TugOfWarStart` with args `(vehicleId)`: show `TugOfWarGui.Bar` as a `BillboardGui` parented to `LocalPlayer.Character.HumanoidRootPart`, offset `UDim2.new(0,0,0,-3)` in stud space. Show centered fill bar.
   - On each `UserInputService.InputBegan` while bar is visible (any key or tap): fire `Remotes.TugOfWarInput:FireServer(vehicleId)`. Animate the player's side of the bar by incrementing fill width locally (cosmetic only; server is authoritative on score).
   - Listen to `Remotes.TugOfWarResult` with args `(vehicleId, won: boolean)`: flash bar green if `won`, red if not. Hide bar after 0.5 seconds.
 
-- [ ] **P2** In `src/client/controllers/EventController.lua`, create a Knit Controller named `"EventController"`. On `KnitStart`:
+- [x] **P2** In `src/client/controllers/EventController.lua`, create a Knit Controller named `"EventController"`. On `KnitStart`:
   - Listen to `Remotes.EventStart` with args `(eventType: string)`: show `EventBanner.Frame` by tweening it in from off-screen top using `TweenService` over 0.4 seconds. Set `EventBanner.TitleLabel.Text` based on `eventType`: `"MonsoonRain"` → `"⛈ HUJAN DERAS!"`, `"SatpolRaid"` → `"🚨 RAZIA SATPOL PP!"`, `"FlashMob"` → `"🎶 KONSER DADAKAN!"`. Hide the banner after 4 seconds.
   - `"MonsoonRain"` start: enable `ReplicatedStorage.Assets.VFX.RainEmitter` cloned into workspace, `Rate = 200`.
   - `"MonsoonRain"` end (via `Remotes.EventEnd`): destroy rain emitter clone.
   - `"SatpolRaid"` start: play `ReplicatedStorage.Assets.Audio.PoliceSiren` sound in `SoundService`, looped.
   - `"SatpolRaid"` end: stop and destroy the siren sound.
 
-- [ ] **P2** In `src/client/controllers/ShopController.lua`, create a Knit Controller named `"ShopController"`. On `KnitStart`:
+- [x] **P2** In `src/client/controllers/ShopController.lua`, create a Knit Controller named `"ShopController"`. On `KnitStart`:
   - Detect proximity to `ShopVendor` part via the `ProximityPrompt.Triggered` event. On trigger: set `ShopGui.Enabled = true`. Populate 3 item card `Frame`s with names, icons, and prices from `Constants.ShopPrices`.
   - On item card click: fire `Remotes.ShopPurchase:FireServer(itemName)`.
   - Listen to `Remotes.ShopPurchase` callback: if success, update item card count label. If fail `"INSUFFICIENT_FUNDS"`, flash the card border red.
   - On `ProximityPrompt.TriggerEnded` or player moves > 8 studs from vendor: set `ShopGui.Enabled = false`.
 
-- [ ] **P2** In `src/client/controllers/BankController.lua`, create a Knit Controller named `"BankController"`. On `KnitStart`:
+- [x] **P2** In `src/client/controllers/BankController.lua`, create a Knit Controller named `"BankController"`. On `KnitStart`:
   - Detect `ProximityPrompt.Triggered` on `BankTerminal`. On trigger: show `BankGui` with current unbanked amount and a `"SETOR"` confirm button.
   - On confirm: fire `Remotes.BankEarnings:FireServer()`. Show a brief `"Tersimpan!"` text for 2 seconds. Close `BankGui`.
   - `Remotes.BankEarnings` has no client callback — the subsequent `Remotes.PayoutReceived` event (fired by `DataService:AddBankedEarnings`) updates the HUD.
 
-- [ ] **P2** In `src/client/controllers/PostSessionController.lua`, create a Knit Controller named `"PostSessionController"`. On `KnitStart`:
+- [x] **P2** In `src/client/controllers/PostSessionController.lua`, create a Knit Controller named `"PostSessionController"`. On `KnitStart`:
   - Listen to `Remotes.ShiftSummary` with args `(data: { totalEarned, penalties, bankedThisSession, topEarnerName, topEarnerAmount })`.
   - On receive: set `PostSessionGui.Enabled = true`. Populate labels. If local player is top earner, show a golden border on their name entry.
   - Show `"SIAP"` button that fires `Remotes.ReadyUp:FireServer()` when clicked.

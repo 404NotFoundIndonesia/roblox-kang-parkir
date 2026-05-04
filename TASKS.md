@@ -247,9 +247,9 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 7. PvP Combat
 
-- [ ] **P1** In `src/server/services/CombatService.lua`, create a Knit Service named `"CombatService"`. Maintain `_dashCooldowns` and `_strikeCooldowns` dictionaries keyed by `player.UserId`.
+- [x] **P1** In `src/server/services/CombatService.lua`, create a Knit Service named `"CombatService"`. Maintain `_dashCooldowns` and `_strikeCooldowns` dictionaries keyed by `player.UserId`.
 
-- [ ] **P1** In `CombatService`, connect `Remotes.DashRequest.OnServerEvent` with args `(player, directionRaw: Vector3)`:
+- [x] **P1** In `CombatService`, connect `Remotes.DashRequest.OnServerEvent` with args `(player, directionRaw: Vector3)`:
   1. Check `_dashCooldowns[uid]`: if `tick() < cooldownEnd`, ignore.
   2. Check `StaminaService:Consume(player, Constants.DashStaminaCost)`: if returns false, ignore.
   3. Normalize `directionRaw`. Compute angle between `directionRaw` and `player.Character.HumanoidRootPart.CFrame.LookVector` using `math.acos(math.clamp(directionRaw:Dot(lookVec), -1, 1))`. If angle in degrees > `Constants.DashMaxAngleDeg`, clamp the direction to the closest allowed direction (project onto the allowed cone — do not reject; clamping prevents exploit while still responding).
@@ -257,19 +257,19 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
   5. Set `_dashCooldowns[uid] = tick() + Constants.DashCooldown`.
   6. Begin hit detection loop for `Constants.DashDuration` seconds using `task.spawn` + `RunService.Heartbeat`: each frame, run `workspace:GetPartBoundsInBox(hrp.CFrame, Vector3.new(4, 5, 3), overlapParams)` filtering to `CollisionGroup = "Players"`. For each result that is not the attacker's own character: call `_ApplyRagdoll(hitPlayer, Constants.DashRagdollDuration)`. Cancel any active drag for `hitPlayer` by calling `DragService:ForceRelease(hitPlayer)`. Break the loop after first hit.
 
-- [ ] **P1** In `CombatService`, implement `_ApplyRagdoll(player: Player, duration: number) -> ()`: set `player.Character.Humanoid.PlatformStand = true`. After `duration` seconds, set `PlatformStand = false`.
+- [x] **P1** In `CombatService`, implement `_ApplyRagdoll(player: Player, duration: number) -> ()`: set `player.Character.Humanoid.PlatformStand = true`. After `duration` seconds, set `PlatformStand = false`.
 
-- [ ] **P1** In `CombatService`, expose `ForceRagdoll(player, duration)` publicly so `PoliceService` and `VehicleService` (AggroSUV knockback) can reuse it.
+- [x] **P1** In `CombatService`, expose `ForceRagdoll(player, duration)` publicly so `PoliceService` and `VehicleService` (AggroSUV knockback) can reuse it.
 
-- [ ] **P1** In `CombatService`, connect `Remotes.StrikeRequest.OnServerEvent` with args `(player)`:
+- [x] **P1** In `CombatService`, connect `Remotes.StrikeRequest.OnServerEvent` with args `(player)`:
   1. Check strike cooldown (0.5s hardcoded) — if within cooldown, ignore.
   2. Run `workspace:GetPartBoundsInBox(hrp.CFrame * CFrame.new(0, 0, -2), Vector3.new(Constants.MeleeWidth, 4, Constants.MeleeRange), overlapParams)`.
   3. Iterate results. Priority order: first check for any part tagged `"ThiefNPC"` — if found, call `ThiefService:Interrupt(thiefId)` and stop. Then check for any part belonging to a rival player character — if found, apply `HumanoidRootPart:ApplyImpulse(attacker.LookVector * 3000)` and cancel their active action via `DragService:ForceRelease(rival)` and `WhistleService:ForceStop(rival)`.
   4. Update cooldown timestamp.
 
-- [ ] **P1** In `src/client/controllers/CombatController.lua`, create a Knit Controller named `"CombatController"`. Bind Dash to `Q` key and Dash mobile button (`HUD.ActionButtons.DashBtn`). Bind Strike to `E` key and Strike mobile button (`HUD.ActionButtons.StrikeBtn`). On Dash input: fire `Remotes.DashRequest:FireServer(hrp.CFrame.LookVector)`. On Strike input: fire `Remotes.StrikeRequest:FireServer()`. Both inputs deduct stamina locally for visual responsiveness only — server is authoritative.
+- [x] **P1** In `src/client/controllers/CombatController.lua`, create a Knit Controller named `"CombatController"`. Bind Dash to `Q` key and Dash mobile button (`HUD.ActionButtons.DashBtn`). Bind Strike to `E` key and Strike mobile button (`HUD.ActionButtons.StrikeBtn`). On Dash input: fire `Remotes.DashRequest:FireServer(hrp.CFrame.LookVector)`. On Strike input: fire `Remotes.StrikeRequest:FireServer()`. Both inputs deduct stamina locally for visual responsiveness only — server is authoritative.
 
-- [ ] **P2** In `CombatService`, connect `Remotes.PlaceStrip.OnServerEvent` with args `(player, position: Vector3)`:
+- [x] **P2** In `CombatService`, connect `Remotes.PlaceStrip.OnServerEvent` with args `(player, position: Vector3)`:
   1. Check player has ≥1 Spike Strip in `MonetizationService:GetInventory(player).SpikeStrip`.
   2. Check `(position - hrp.Position).Magnitude <= Constants.SpikeStripPlaceRadius`.
   3. Check position is on a ground surface: run `workspace:Raycast(position + Vector3.new(0, 1, 0), Vector3.new(0, -2, 0))` — reject if no hit.

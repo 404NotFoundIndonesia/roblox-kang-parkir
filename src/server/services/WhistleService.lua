@@ -144,4 +144,9 @@ function WhistleService:HandleWhistleStop(player: Player)
 	end
 end
 
+-- Public alias used by CombatService (strike interrupts an active whistle).
+function WhistleService:ForceStop(player: Player)
+	self:HandleWhistleStop(player)
+end
+
 return WhistleService

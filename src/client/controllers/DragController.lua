@@ -94,13 +94,6 @@ local function highlightVehicle(model: Model?)
 	_highlight   = box
 end
 
-local function clearHighlight()
-	if _highlight then
-		_highlight:Destroy()
-		_highlight = nil
-	end
-	_nearVehicleId = nil
-end
 
 -- Overlap params filtered to VehicleHitbox-tagged parts.
 local function makeHitboxParams(): OverlapParams
@@ -307,6 +300,16 @@ end
 -- Called externally by HUDController once QTEHUD buttons are ready.
 function DragController:OnQTEButtonPressed(buttonIndex: number)
 	submitQTEInput(buttonIndex)
+end
+
+-- ── State accessors (used by CombatController for E-key conflict resolution) ──
+
+function DragController:IsDragging(): boolean
+	return _isDragging
+end
+
+function DragController:IsNearVehicle(): boolean
+	return _nearVehicleId ~= nil
 end
 
 return DragController

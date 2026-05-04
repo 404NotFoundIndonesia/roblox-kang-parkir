@@ -273,15 +273,17 @@ function DragService:_HandleDragConfirm(player: Player, vehicleId: string, desir
 	-- Alignment bonus.
 	local alignBonus = self:_ComputeAlignmentBonus(vehicleId, desiredCFrame, VehicleService)
 
-	-- Payout via EconomyService (lazy; may not exist yet).
-	local EconomyService = getEconomyService()
-	if EconomyService then
-		local multiplier = 0
-		if EconomyService.GetEventMultiplier then
-			multiplier = EconomyService:GetEventMultiplier()
+	-- Payout via EconomyService — skip if vehicle was penalized (e.g. spike-stripped mid-drag).
+	if not VehicleService:IsPenalized(vehicleId) then
+		local EconomyService = getEconomyService()
+		if EconomyService then
+			local multiplier = 0
+			if EconomyService.GetEventMultiplier then
+				multiplier = EconomyService:GetEventMultiplier()
+			end
+			local payout = EconomyService:CalculatePayout(vehicleType, alignBonus, multiplier, 0)
+			EconomyService:AddPayout(player, payout)
 		end
-		local payout = EconomyService:CalculatePayout(vehicleType, alignBonus, multiplier, 0)
-		EconomyService:AddPayout(player, payout)
 	end
 
 	-- Fire QTE prompt for Supercar (P2).

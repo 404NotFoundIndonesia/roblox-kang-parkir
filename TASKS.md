@@ -483,14 +483,14 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 All checks are already specified inline in the relevant service tasks above. This section is an audit checklist — each item must be verified by reading the corresponding service implementation.
 
-- [ ] **P1** `WhistleService`: rate limit of 1 activation per `Constants.WhistleRateLimit` seconds is implemented and stamina is checked server-side before `OverlapParams` runs.
-- [ ] **P1** `CombatService` Dash: direction is normalized and clamped to 45° cone server-side; stamina cost is consumed via `StaminaService:Consume` before `VectorForce` is applied; cooldown timestamp is checked before any processing.
-- [ ] **P1** `DragService` `DragConfirm`: position is validated inside zone bounds via `ZoneService:IsInZone` before re-anchoring; player ownership of the zone is confirmed; vehicleId ownership is confirmed against `_activeDrags`.
-- [ ] **P1** `VehicleService` payout: `_isPenalized[vehicleId]` flag is checked before `EconomyService:AddPayout` is called; vehicle must be in `Parked` state.
-- [ ] **P1** `MonetizationService`: `ConsumeItem` checks `count > 0` before decrementing and before dispatching any effect; `ShopPurchase` validates `itemName` against a whitelist before calling `EconomyService:SpendShiftCurrency`.
-- [ ] **P2** No `RemoteFunction` exists that writes to economy state — all economy writes are `RemoteEvent` handlers inside server services only.
-- [ ] **P2** `TugOfWarService`: per-player input rate is capped at `Constants.TugOfWarAPMCap` inputs/second using a rolling counter reset every second.
-- [ ] **P2** `PoliceService` `CaughtPlayer`: penalty is computed as a fraction of `GetUnbanked` at the moment of catch — not a fixed amount — so it scales correctly regardless of the player's current balance.
+- [x] **P1** `WhistleService`: rate limit of 1 activation per `Constants.WhistleRateLimit` seconds is implemented and stamina is checked server-side before `OverlapParams` runs.
+- [x] **P1** `CombatService` Dash: direction is normalized and clamped to 45° cone server-side; stamina cost is consumed via `StaminaService:Consume` before `VectorForce` is applied; cooldown timestamp is checked before any processing.
+- [x] **P1** `DragService` `DragConfirm`: position is validated inside zone bounds via `ZoneService:IsInZone` before re-anchoring; player ownership of the zone is confirmed; vehicleId ownership is confirmed against `_activeDrags`.
+- [x] **P1** `VehicleService` payout: `_isPenalized[vehicleId]` flag is checked before `EconomyService:AddPayout` is called; vehicle must be in `Parked` state.
+- [x] **P1** `MonetizationService`: `ConsumeItem` checks `count > 0` before decrementing and before dispatching any effect; `ShopPurchase` validates `itemName` against a whitelist before calling `EconomyService:SpendShiftCurrency`.
+- [x] **P2** No `RemoteFunction` exists that writes to economy state — all economy writes are `RemoteEvent` handlers inside server services only.
+- [x] **P2** `TugOfWarService`: per-player input rate is capped at `Constants.TugOfWarAPMCap` inputs/second using a rolling counter reset every second.
+- [x] **P2** `PoliceService` `CaughtPlayer`: penalty is computed as a fraction of `GetUnbanked` at the moment of catch — not a fixed amount — so it scales correctly regardless of the player's current balance.
 
 ---
 

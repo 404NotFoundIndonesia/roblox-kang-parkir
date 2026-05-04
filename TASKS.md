@@ -281,23 +281,23 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 8. Economy System
 
-- [ ] **P1** In `src/server/services/EconomyService.lua`, create a Knit Service named `"EconomyService"`. Maintain `_unbanked` dictionary keyed by `player.UserId`, initialized to `0` on player join. Maintain `_currentEventMultiplier = 0` (updated by `EventService`).
+- [x] **P1** In `src/server/services/EconomyService.lua`, create a Knit Service named `"EconomyService"`. Maintain `_unbanked` dictionary keyed by `player.UserId`, initialized to `0` on player join. Maintain `_currentEventMultiplier = 0` (updated by `EventService`).
 
-- [ ] **P1** In `EconomyService`, expose `CalculatePayout(vehicleType: string, alignmentBonus: number, eventMultiplier: number, penalties: number) -> number`: implements `(Constants.VehicleBasePayouts[vehicleType] + alignmentBonus) * (1 + eventMultiplier) - penalties`. Floors result at `0`. Returns integer (use `math.floor`).
+- [x] **P1** In `EconomyService`, expose `CalculatePayout(vehicleType: string, alignmentBonus: number, eventMultiplier: number, penalties: number) -> number`: implements `(Constants.VehicleBasePayouts[vehicleType] + alignmentBonus) * (1 + eventMultiplier) - penalties`. Floors result at `0`. Returns integer (use `math.floor`).
 
-- [ ] **P1** In `EconomyService`, expose `AddPayout(player: Player, amount: number) -> ()`: add `amount` to `_unbanked[uid]`. Fire `Remotes.PayoutReceived:FireClient(player, amount, _unbanked[uid])` so HUD shows both the delta and the new total.
+- [x] **P1** In `EconomyService`, expose `AddPayout(player: Player, amount: number) -> ()`: add `amount` to `_unbanked[uid]`. Fire `Remotes.PayoutReceived:FireClient(player, amount, _unbanked[uid])` so HUD shows both the delta and the new total.
 
-- [ ] **P1** In `EconomyService`, expose `ApplyPenalty(player: Player, amount: number) -> ()`: subtract `amount` from `_unbanked[uid]`, floor at `0`. Fire `Remotes.PenaltyApplied:FireClient(player, amount, _unbanked[uid])`.
+- [x] **P1** In `EconomyService`, expose `ApplyPenalty(player: Player, amount: number) -> ()`: subtract `amount` from `_unbanked[uid]`, floor at `0`. Fire `Remotes.PenaltyApplied:FireClient(player, amount, _unbanked[uid])`.
 
-- [ ] **P1** In `EconomyService`, expose `BankEarnings(player: Player) -> ()`: add `_unbanked[uid]` to `DataService:GetProfile(player).Data.BankedEarnings`, then set `_unbanked[uid] = 0`. Fire `Remotes.PayoutReceived:FireClient(player, 0, 0)` to update HUD unbanked display to 0. Call `DataService:AddBankedEarnings(player, amount)` which fires its own client event for banked total refresh.
+- [x] **P1** In `EconomyService`, expose `BankEarnings(player: Player) -> ()`: add `_unbanked[uid]` to `DataService:GetProfile(player).Data.BankedEarnings`, then set `_unbanked[uid] = 0`. Fire `Remotes.PayoutReceived:FireClient(player, 0, 0)` to update HUD unbanked display to 0. Call `DataService:AddBankedEarnings(player, amount)` which fires its own client event for banked total refresh.
 
-- [ ] **P1** In `EconomyService`, expose `SpendShiftCurrency(player: Player, amount: number) -> boolean`: if `_unbanked[uid] >= amount`, deduct and return `true`. Otherwise return `false` without deducting.
+- [x] **P1** In `EconomyService`, expose `SpendShiftCurrency(player: Player, amount: number) -> boolean`: if `_unbanked[uid] >= amount`, deduct and return `true`. Otherwise return `false` without deducting.
 
-- [ ] **P1** In `EconomyService`, expose `GetUnbanked(player: Player) -> number`.
+- [x] **P1** In `EconomyService`, expose `GetUnbanked(player: Player) -> number`.
 
-- [ ] **P1** In `EconomyService`, expose `SetEventMultiplier(multiplier: number) -> ()`: sets `_currentEventMultiplier`. Called by `EventService`.
+- [x] **P1** In `EconomyService`, expose `SetEventMultiplier(multiplier: number) -> ()`: sets `_currentEventMultiplier`. Called by `EventService`.
 
-- [ ] **P2** In `EconomyService`, expose `AutoBankAll() -> ()`: iterate all players in `Players:GetPlayers()`, call `BankEarnings(player)` for each. Called by `SessionService` at `ShiftEnd`.
+- [x] **P2** In `EconomyService`, expose `AutoBankAll() -> ()`: iterate all players in `Players:GetPlayers()`, call `BankEarnings(player)` for each. Called by `SessionService` at `ShiftEnd`.
 
 ---
 

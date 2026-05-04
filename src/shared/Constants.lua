@@ -21,9 +21,10 @@ local Constants = table.freeze({
 	MeleeWidth          = 2,     -- studs wide
 
 	-- Stamina
-	StaminaMax          = 100,  -- base max
-	StaminaRegenRate    = 8,    -- units/second passive regen
-	WhistleStaminaDrain = 4,    -- units/second while whistling
+	StaminaMax            = 100,  -- base max
+	StaminaPerSkillLevel  = 30,   -- bonus max stamina per StaminaLevel point
+	StaminaRegenRate      = 8,    -- units/second passive regen
+	WhistleStaminaDrain   = 4,    -- units/second while whistling
 
 	-- Vehicle drag / physics
 	TipOverThreshold     = 15,    -- rad/s angular velocity trigger

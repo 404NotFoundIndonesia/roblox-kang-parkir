@@ -303,25 +303,25 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 9. Helmet Thief AI
 
-- [ ] **P1** In `src/server/services/ThiefService.lua`, create a Knit Service named `"ThiefService"`. Maintain `_activeThieves` dictionary keyed by a `thiefId` string: `{ model, state: NPCState, targetVehicleId, heldHelmet, coroutine }`.
+- [x] **P1** In `src/server/services/ThiefService.lua`, create a Knit Service named `"ThiefService"`. Maintain `_activeThieves` dictionary keyed by a `thiefId` string: `{ model, state: NPCState, targetVehicleId, heldHelmet, coroutine }`.
 
-- [ ] **P1** In `ThiefService`, on `KnitStart`: start a spawn manager loop using `task.spawn`. Every 5 seconds, if `#_activeThieves < Constants.ThiefMaxAlive` and `_respawnCooldown <= tick()`: find all Sport Bike vehicles in `VehicleService` where state is `"Parked"` and the helmet weld is still attached. If any exist, pick one at random, spawn a Thief NPC from `ReplicatedStorage.Assets.NPCs.HelmetThief` at `ThiefDespawnNode` position, assign a `thiefId`, call `_StartBehaviorTree(thiefId, targetVehicleId)`.
+- [x] **P1** In `ThiefService`, on `KnitStart`: start a spawn manager loop using `task.spawn`. Every 5 seconds, if `#_activeThieves < Constants.ThiefMaxAlive` and `_respawnCooldown <= tick()`: find all Sport Bike vehicles in `VehicleService` where state is `"Parked"` and the helmet weld is still attached. If any exist, pick one at random, spawn a Thief NPC from `ReplicatedStorage.Assets.NPCs.HelmetThief` at `ThiefDespawnNode` position, assign a `thiefId`, call `_StartBehaviorTree(thiefId, targetVehicleId)`.
 
-- [ ] **P1** In `ThiefService`, implement `_StartBehaviorTree(thiefId, targetVehicleId)` as a coroutine stored in `_activeThieves[thiefId].coroutine`:
+- [x] **P1** In `ThiefService`, implement `_StartBehaviorTree(thiefId, targetVehicleId)` as a coroutine stored in `_activeThieves[thiefId].coroutine`:
   - **Roam state**: if no target, pick a random waypoint in the map and navigate there via `PathfindingService`. Loop until a target is assigned.
   - **Navigate state**: compute path to the target vehicle's `PrimaryPart.Position`. Move the NPC along waypoints each Heartbeat.
   - **Interact state**: play `"Rummage"` animation on NPC Humanoid. Wait `Constants.ThiefInteractDuration` seconds. If not interrupted: un-weld the helmet from the Sport Bike (call `helmet:SetAttribute("Stolen", true)`, disconnect the `WeldConstraint`). Transition to Flee state.
   - **Flee state**: weld the helmet to the NPC's right hand `Attachment`. Compute path to `ThiefDespawnNode`. Move NPC there. On arrival: fire `_OnHelmetStolen(targetVehicleId)`. Destroy thief and helmet. Remove from `_activeThieves`. Set `_respawnCooldown = tick() + math.random(Constants.ThiefRespawnDelayMin, Constants.ThiefRespawnDelayMax)`.
 
-- [ ] **P1** In `ThiefService`, expose `Interrupt(thiefId: string) -> ()`:
+- [x] **P1** In `ThiefService`, expose `Interrupt(thiefId: string) -> ()`:
   1. Resume the coroutine with an interrupt signal by setting `_activeThieves[thiefId].interrupted = true` — the coroutine checks this flag at each `task.wait()` call.
   2. Drop the helmet: unweld from NPC, unanchor at current NPC position as a loose physics Part.
   3. Set NPC `Humanoid.PlatformStand = true` for `Constants.ThiefRagdollDuration` seconds, then `PlatformStand = false`.
   4. Transition thief to `Roam` state after ragdoll. Set a per-thief retarget cooldown: thief ignores Sport Bikes for `Constants.ThiefRetargetCooldown` seconds.
 
-- [ ] **P1** In `ThiefService`, implement `_OnHelmetStolen(vehicleId)`: look up the vehicle's `ownerPlayer`. Call `EconomyService:ApplyPenalty(ownerPlayer, 0.4 * baseVehiclePayout)` (40% penalty on the Sport Bike payout for that cycle). Fire a `RemoteEvent` to the owning player's client to show a `"Helmet stolen!"` screen notification.
+- [x] **P1** In `ThiefService`, implement `_OnHelmetStolen(vehicleId)`: look up the vehicle's `ownerPlayer`. Call `EconomyService:ApplyPenalty(ownerPlayer, 0.4 * baseVehiclePayout)` (40% penalty on the Sport Bike payout for that cycle). Fire a `RemoteEvent` to the owning player's client to show a `"Helmet stolen!"` screen notification.
 
-- [ ] **P2** In `ThiefService`, on every `Heartbeat`: for each thief navigating toward a zone, check if the thief's position is inside any `ParkingZone` Part's bounding box using `ZoneService:IsInZone`. If inside, fire `Remotes.ThreatInZone:FireClient(zoneOwner, thiefId, thief.model.PrimaryPart.Position)` via `UnreliableRemoteEvent`.
+- [x] **P2** In `ThiefService`, on every `Heartbeat`: for each thief navigating toward a zone, check if the thief's position is inside any `ParkingZone` Part's bounding box using `ZoneService:IsInZone`. If inside, fire `Remotes.ThreatInZone:FireClient(zoneOwner, thiefId, thief.model.PrimaryPart.Position)` via `UnreliableRemoteEvent`.
 
 ---
 

@@ -26,6 +26,7 @@ local REMOTE_DEFS: { [string]: string } = {
 	ItemGranted         = "RemoteEvent", -- (itemName)
 	ShopPurchaseResult  = "RemoteEvent", -- (itemName, success, reason?, newInventory?)
 	QTEPrompt           = "RemoteEvent", -- (vehicleId, sequence)
+	HelmetStolen        = "RemoteEvent", -- () — notify zone owner their Sport Bike helmet was taken
 
 	-- ── Server → Client (unreliable / visual-only) ──────────────────────────
 	StaminaUpdated = "UnreliableRemoteEvent", -- (newValue) — Heartbeat rate

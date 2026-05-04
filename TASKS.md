@@ -349,24 +349,24 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 11. Dynamic Event System
 
-- [ ] **P1** In `src/server/services/EventService.lua`, create a Knit Service named `"EventService"`. Maintain `_activeEvent: EventType | nil = nil`.
+- [x] **P1** In `src/server/services/EventService.lua`, create a Knit Service named `"EventService"`. Maintain `_activeEvent: EventType | nil = nil`.
 
-- [ ] **P1** In `EventService`, on `KnitStart`: wait for `SessionService` to emit `PeakShift` phase. Then begin the event scheduling loop using `task.spawn`: `task.wait(math.random(Constants.EventCooldownMin, Constants.EventCooldownMax))`. Pick a random `EventType` from `{ "MonsoonRain", "SatpolRaid", "FlashMob" }` — each equally weighted. Call `_StartEvent(eventType)`.
+- [x] **P1** In `EventService`, on `KnitStart`: wait for `SessionService` to emit `PeakShift` phase. Then begin the event scheduling loop using `task.spawn`: `task.wait(math.random(Constants.EventCooldownMin, Constants.EventCooldownMax))`. Pick a random `EventType` from `{ "MonsoonRain", "SatpolRaid", "FlashMob" }` — each equally weighted. Call `_StartEvent(eventType)`.
 
-- [ ] **P1** In `EventService`, implement `_StartEvent(eventType: EventType) -> ()`: set `_activeEvent = eventType`. Fire `Remotes.EventStart:FireAllClients(eventType)`. Dispatch to the correct handler based on `eventType`. After the event's natural duration ends, call `_EndEvent(eventType)`.
+- [x] **P1** In `EventService`, implement `_StartEvent(eventType: EventType) -> ()`: set `_activeEvent = eventType`. Fire `Remotes.EventStart:FireAllClients(eventType)`. Dispatch to the correct handler based on `eventType`. After the event's natural duration ends, call `_EndEvent(eventType)`.
 
-- [ ] **P1** In `EventService`, implement `_EndEvent(eventType: EventType) -> ()`: set `_activeEvent = nil`. Fire `Remotes.EventEnd:FireAllClients(eventType)`. Dispatch cleanup to the correct handler. After cleanup, reschedule next event by looping back to the random wait.
+- [x] **P1** In `EventService`, implement `_EndEvent(eventType: EventType) -> ()`: set `_activeEvent = nil`. Fire `Remotes.EventEnd:FireAllClients(eventType)`. Dispatch cleanup to the correct handler. After cleanup, reschedule next event by looping back to the random wait.
 
-- [ ] **P2** In `EventService`, implement Monsoon Rain handler:
+- [x] **P2** In `EventService`, implement Monsoon Rain handler:
   - `_StartMonsoon()`: collect all `BasePart`s in `Workspace.Map` (a `Folder` holding environment geometry). For each with `Material ~= Enum.Material.Air`: store original `Friction` in a `_originalFriction` table, set `Friction = Constants.MonsoonFriction`. For each player: store original `WalkSpeed`, set `Humanoid.WalkSpeed = originalSpeed * Constants.MonsoonSpeedMultiplier`. Fire `Remotes.RainToggle:FireAllClients(true)`.
   - `_EndMonsoon()`: restore all `Friction` values from `_originalFriction`. Restore all player `WalkSpeed` values. Fire `Remotes.RainToggle:FireAllClients(false)`. Clear `_originalFriction`.
   - Duration: 90 seconds.
 
-- [ ] **P2** In `EventService`, implement Satpol PP Raid handler:
+- [x] **P2** In `EventService`, implement Satpol PP Raid handler:
   - `_StartRaid()`: call `PoliceService:StartRaid()`. Duration: 120 seconds, then call `_EndRaid()`.
   - `_EndRaid()`: call `PoliceService:EndRaid()`.
 
-- [ ] **P2** In `EventService`, implement Flash Mob handler:
+- [x] **P2** In `EventService`, implement Flash Mob handler:
   - `_StartFlashMob()`: call `TrafficService:FlashMobBurst()`. Call `EconomyService:SetEventMultiplier(Constants.FlashMobEventMultiplier)`. Duration equals `Constants.FlashMobDuration` (10 seconds for the burst), but the multiplier stays active for 60 additional seconds to reward the players who managed the surge.
   - `_EndFlashMob()`: call `EconomyService:SetEventMultiplier(0)`. Restore `TrafficService` weights (already handled inside `FlashMobBurst`, but call `TrafficService:RestoreWeights()` as a safety explicit call).
 

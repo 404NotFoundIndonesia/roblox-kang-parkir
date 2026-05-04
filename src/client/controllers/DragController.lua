@@ -26,7 +26,8 @@ local Camera      = workspace.CurrentCamera
 
 local _isDragging         = false
 local _dragVehicleId: string?  = nil
-local _desiredCFrame      = CFrame.new()
+local _desiredCFrame      = CFrame.new()  -- server-authority position (sent to server)
+local _visualCFrame       = CFrame.new()  -- lerped visual position (cosmetic only)
 local _gridOverlay: Part? = nil
 local _highlight: SelectionBox? = nil
 local _nearVehicleId: string?   = nil  -- vehicle closest to player for interact hint
@@ -199,6 +200,8 @@ function DragController:KnitStart()
 	Remotes.DragStartResult:Connect(function(vehicleId: string, success: boolean, _reason: string?)
 		if success and vehicleId == _dragVehicleId then
 			_isDragging = true
+			-- Snap visual to authority position so first lerp has no pop.
+			_visualCFrame = _desiredCFrame
 			showGridOverlay()
 		elseif not success then
 			if _reason == "OUT_OF_BOUNDS" then
@@ -224,6 +227,15 @@ function DragController:KnitStart()
 	-- Heartbeat: proximity detection + drag position updates.
 	RunService.Heartbeat:Connect(function()
 		self:_HeartbeatTick()
+	end)
+
+	-- RenderStepped: lerp grid overlay toward the authority CFrame for smooth visuals.
+	-- alpha = min(1, dt * 20) gives ~50 ms settling time without overshooting.
+	RunService.RenderStepped:Connect(function(dt: number)
+		if not _isDragging or not _gridOverlay then return end
+		local alpha = math.min(1, dt * 20)
+		_visualCFrame = _visualCFrame:Lerp(_desiredCFrame, alpha)
+		_gridOverlay.CFrame = _visualCFrame
 	end)
 end
 
@@ -263,10 +275,7 @@ function DragController:_HeartbeatTick()
 		-- ── Drag position update ──────────────────────────────────────────────
 		local cf = getMouseWorldCFrame()
 		if cf then
-			_desiredCFrame = cf
-			if _gridOverlay then
-				_gridOverlay.CFrame = cf
-			end
+			_desiredCFrame = cf  -- authority: sent to server and used for DragConfirm
 			Remotes.DragPositionUpdate:FireServer(_dragVehicleId, cf)
 		end
 	end

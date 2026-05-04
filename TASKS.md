@@ -496,12 +496,12 @@ All checks are already specified inline in the relevant service tasks above. Thi
 
 ## 17. Optimization & Networking
 
-- [ ] **P1** In `src/server/services/PhysicsService.lua`, create a Knit Service named `"PhysicsService"`. Expose `AssignServerOwnership(model: Model) -> ()`: iterates all `BasePart`s in the model and calls `part:SetNetworkOwner(nil)` (nil = server). Call this immediately after every vehicle is spawned by `TrafficService`. Never call `SetNetworkOwner` with a Player argument for vehicles — vehicle physics must always run on the server.
+- [x] **P1** In `src/server/services/PhysicsService.lua`, create a Knit Service named `"PhysicsService"`. Expose `AssignServerOwnership(model: Model) -> ()`: iterates all `BasePart`s in the model and calls `part:SetNetworkOwner(nil)` (nil = server). Call this immediately after every vehicle is spawned by `TrafficService`. Never call `SetNetworkOwner` with a Player argument for vehicles — vehicle physics must always run on the server.
 
-- [ ] **P1** In `PhysicsService`, expose `AnchorModel(model: Model) -> ()` and `UnanchorModel(model: Model) -> ()`: iterate all `BasePart`s and set `Anchored`. `AnchorModel` is called on every vehicle at spawn and after `SetParked`. `UnanchorModel` is called only during drag.
+- [x] **P1** In `PhysicsService`, expose `AnchorModel(model: Model) -> ()` and `UnanchorModel(model: Model) -> ()`: iterate all `BasePart`s and set `Anchored`. `AnchorModel` is called on every vehicle at spawn and after `SetParked`. `UnanchorModel` is called only during drag.
 
-- [ ] **P2** Audit every `RemoteEvent:FireAllClients` and `FireClient` call in every service. For each one, confirm: if the data is used to update a visual element only (VFX, animation, trail, particle), it must use `UnreliableRemoteEvent`. If it carries game state (payout amount, phase change, stun, caught penalty), it must use `RemoteEvent`. Document any mismatches found and fix them.
+- [x] **P2** Audit every `RemoteEvent:FireAllClients` and `FireClient` call in every service. For each one, confirm: if the data is used to update a visual element only (VFX, animation, trail, particle), it must use `UnreliableRemoteEvent`. If it carries game state (payout amount, phase change, stun, caught penalty), it must use `RemoteEvent`. Document any mismatches found and fix them.
 
-- [ ] **P2** In `TrafficService`, enforce a hard cap `_maxVehicles`: `math.min(8 * Players:GetPlayerCount(), 40)`. Recalculate when a player joins or leaves. Never spawn above this cap regardless of event state.
+- [x] **P2** In `TrafficService`, enforce a hard cap `_maxVehicles`: `math.min(8 * Players:GetPlayerCount(), 40)`. Recalculate when a player joins or leaves. Never spawn above this cap regardless of event state.
 
-- [ ] **P3** In `DragController`, implement client-side visual interpolation for dragged vehicles: instead of setting the vehicle position directly each `Heartbeat` from server position updates, lerp the local visual position using `RunService.RenderStepped` with `alpha = math.min(1, dt * 20)`. The server position is the authority; the lerp is cosmetic smoothing only.
+- [x] **P3** In `DragController`, implement client-side visual interpolation for dragged vehicles: instead of setting the vehicle position directly each `Heartbeat` from server position updates, lerp the local visual position using `RunService.RenderStepped` with `alpha = math.min(1, dt * 20)`. The server position is the authority; the lerp is cosmetic smoothing only.

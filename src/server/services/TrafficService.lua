@@ -139,6 +139,14 @@ function TrafficService:_SpawnLoop()
 		model:PivotTo(spawnNode.CFrame)
 		model.Parent = workspace
 
+		-- Assign server physics ownership and anchor before VehicleService takes over.
+		-- VehicleService:RegisterVehicle will unanchor the model for traffic simulation.
+		local okP, PhysicsService = pcall(Knit.GetService, Knit, "PhysicsService")
+		if okP and PhysicsService then
+			PhysicsService:AssignServerOwnership(model)
+			PhysicsService:AnchorModel(model)
+		end
+
 		local vehicleId = "V_" .. HttpService:GenerateGUID(false)
 		VehicleService:RegisterVehicle(vehicleId, model, vehicleType)
 		_aliveCount += 1

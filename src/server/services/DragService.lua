@@ -206,9 +206,15 @@ function DragService:_HandleDragStart(player: Player, vehicleId: string)
 	local model       = vehicleData.model
 	local primaryPart = model.PrimaryPart :: BasePart
 
-	-- 5. Transition state, unanchor, apply collision group.
+	-- 5. Transition state, unanchor via PhysicsService, apply collision group.
 	VehicleService:SetDragging(vehicleId, player)
-	unanchorModel(model)
+
+	local okP, PhysicsService = pcall(Knit.GetService, Knit, "PhysicsService")
+	if okP and PhysicsService then
+		PhysicsService:UnanchorModel(model)
+	else
+		unanchorModel(model)
+	end
 	setCollisionGroup(model, "DraggedVehicles")
 
 	-- 6. Create drag handle + constraints.
@@ -268,6 +274,11 @@ function DragService:_HandleDragConfirm(player: Player, vehicleId: string, desir
 	local vehicleData = allVehicles[vehicleId]
 	if vehicleData then
 		setCollisionGroup(vehicleData.model, "ParkedVehicles")
+		-- Guarantee anchor state via PhysicsService (SetParked also anchors internally).
+		local okP, PhysicsService = pcall(Knit.GetService, Knit, "PhysicsService")
+		if okP and PhysicsService then
+			PhysicsService:AnchorModel(vehicleData.model)
+		end
 	end
 
 	-- Alignment bonus.

@@ -84,6 +84,10 @@ function WhistleService:HandleWhistleStart(player: Player)
 	local uid  = player.UserId
 	local now  = os.clock()
 
+	-- Stun gate (PoliceService catch stun).
+	local okC, CombatService = pcall(Knit.GetService, Knit, "CombatService")
+	if okC and CombatService and CombatService:IsStunned(player) then return end
+
 	-- Rate limit.
 	local lastTime = _lastWhistleTime[uid] or 0
 	if (now - lastTime) < Constants.WhistleRateLimit then return end

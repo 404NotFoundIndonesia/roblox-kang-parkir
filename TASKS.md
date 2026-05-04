@@ -327,23 +327,23 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 10. Police AI (Satpol PP)
 
-- [ ] **P2** In `src/server/services/PoliceService.lua`, create a Knit Service named `"PoliceService"`. Maintain `_activePolice` array of `{ model, targetPlayer, caughtTimer }`. Maintain `_bribes` set of `player.UserId` values that have used Bribe Money this event.
+- [x] **P2** In `src/server/services/PoliceService.lua`, create a Knit Service named `"PoliceService"`. Maintain `_activePolice` array of `{ model, targetPlayer, caughtTimer }`. Maintain `_bribes` set of `player.UserId` values that have used Bribe Money this event.
 
-- [ ] **P2** In `PoliceService`, expose `StartRaid() -> ()`: spawn `Constants.PoliceSpawnCount` NPCs from `ReplicatedStorage.Assets.NPCs.SatpolPP` at parts tagged `"PoliceSpawnNode"`. For each NPC, start a `task.spawn` loop that runs every 0.5 seconds:
+- [x] **P2** In `PoliceService`, expose `StartRaid() -> ()`: spawn `Constants.PoliceSpawnCount` NPCs from `ReplicatedStorage.Assets.NPCs.SatpolPP` at parts tagged `"PoliceSpawnNode"`. For each NPC, start a `task.spawn` loop that runs every 0.5 seconds:
   1. Find the nearest player not in a `HidingVolume` and not in `_bribes`. Do a LoS raycast from NPC head position to player `HumanoidRootPart`: `workspace:Raycast(from, to - from, raycastParams)` where `raycastParams` ignores `Players` collision group but hits `HidingVolume` parts. If raycast hits a `HidingVolume` before reaching the player, that player is hidden — skip.
   2. Set `targetPlayer` to the closest visible player. Pathfind NPC toward target using `PathfindingService`.
   3. If `(npc.PrimaryPart.Position - target.HumanoidRootPart.Position).Magnitude <= Constants.PoliceProximityCaught`: increment `caughtTimer` by `0.5`. If `caughtTimer >= Constants.PoliceCaughtTimer`: call `_CaughtPlayer(target)`. Reset `caughtTimer`.
   4. If target moves out of proximity, reset `caughtTimer = 0`.
 
-- [ ] **P2** In `PoliceService`, implement `_CaughtPlayer(player: Player) -> ()`:
+- [x] **P2** In `PoliceService`, implement `_CaughtPlayer(player: Player) -> ()`:
   1. Call `EconomyService:ApplyPenalty(player, EconomyService:GetUnbanked(player) * Constants.PoliceCaughtPenaltyPct)`.
   2. Teleport player character to the `Part` named `CitationNode`.
   3. Set a `_stunned[player.UserId] = true` flag. Fire `Remotes.PlayerStunned:FireClient(player, Constants.PoliceCaughtStunDuration)`. After `Constants.PoliceCaughtStunDuration` seconds, clear the stun flag.
   4. All `CombatService` and `WhistleService` OnServerEvent handlers check `_stunned` flag and ignore inputs during stun.
 
-- [ ] **P2** In `PoliceService`, expose `EndRaid() -> ()`: for each NPC in `_activePolice`, destroy the model. Clear `_activePolice`. Clear `_bribes`.
+- [x] **P2** In `PoliceService`, expose `EndRaid() -> ()`: for each NPC in `_activePolice`, destroy the model. Clear `_activePolice`. Clear `_bribes`.
 
-- [ ] **P2** In `PoliceService`, expose `ClearTargeting(player: Player) -> ()`: add `player.UserId` to `_bribes`. All police NPCs will skip this player for LoS targeting for the remainder of the event.
+- [x] **P2** In `PoliceService`, expose `ClearTargeting(player: Player) -> ()`: add `player.UserId` to `_bribes`. All police NPCs will skip this player for LoS targeting for the remainder of the event.
 
 ---
 

@@ -1,16 +1,15 @@
 -- WhistleController wires up the whistle input on the client.
 --
 -- Input: F key (keyboard) OR WhistleBtn GuiButton (touch/mobile).
--- While held: fires WhistleStart once, plays looping SFX with pitch cycling,
---             emits ParticleEmitter at MouthAttachment for 0.3s each cycle.
--- On release: fires WhistleStop, stops SFX.
+-- While held: fires WhistleStart once, plays SFX at the player's assigned pitch
+--             (read from CosmeticController), emits ParticleEmitter at MouthAttachment
+--             every 0.3 s. On release: fires WhistleStop, stops SFX.
 --
--- Pitch cycles across 8 steps: 0.75 + (step-1) × 0.0357 ≈ 0.75 → 1.0.
+-- Pitch = 0.75 + (pitchIndex - 1) × 0.0357  (maps 1–8 → 0.75 → 1.0).
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players           = game:GetService("Players")
 local UserInputService  = game:GetService("UserInputService")
-local RunService        = game:GetService("RunService")
 
 local Knit    = require(ReplicatedStorage.Shared.Knit)
 local Remotes = require(ReplicatedStorage.Shared.Remotes)
@@ -21,15 +20,12 @@ local LocalPlayer = Players.LocalPlayer
 
 -- SFX asset id — placeholder; swap for real whistle sound id before publish.
 local WHISTLE_SOUND_ID = "rbxassetid://0"
-local PITCH_STEPS      = 8
 local PITCH_BASE       = 0.75
 local PITCH_INCREMENT  = 0.0357
 local PARTICLE_BURST_DURATION = 0.3
 
-local _isWhistling    = false
-local _pitchIndex     = 1
-local _whistleSound: Sound?   = nil
-local _particleConn: RBXScriptConnection? = nil
+local _isWhistling  = false
+local _whistleSound: Sound? = nil
 
 -- ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -58,14 +54,19 @@ local function getOrCreateSound(): Sound
 	return s
 end
 
+local function getAssignedPitch(): number
+	local ok, CosmeticController = pcall(Knit.GetController, Knit, "CosmeticController")
+	if ok and CosmeticController then
+		local idx = CosmeticController:GetPitchIndex()
+		return PITCH_BASE + (idx - 1) * PITCH_INCREMENT
+	end
+	return PITCH_BASE
+end
+
 local function playWhistleTone()
 	local sound = getOrCreateSound()
-	local pitch  = PITCH_BASE + (_pitchIndex - 1) * PITCH_INCREMENT
-	sound.PlaybackSpeed = pitch
+	sound.PlaybackSpeed = getAssignedPitch()
 	sound:Play()
-
-	-- Advance pitch index cyclically.
-	_pitchIndex = (_pitchIndex % PITCH_STEPS) + 1
 
 	-- Emit particles at MouthAttachment if it exists.
 	local character     = LocalPlayer.Character
@@ -82,7 +83,6 @@ end
 local function beginWhistle()
 	if _isWhistling then return end
 	_isWhistling = true
-	_pitchIndex  = 1
 
 	Remotes.WhistleStart:FireServer()
 

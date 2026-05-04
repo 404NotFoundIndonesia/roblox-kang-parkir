@@ -449,12 +449,12 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 14. Cosmetics System
 
-- [ ] **P2** In `src/server/services/CosmeticService.lua`, create a Knit Service named `"CosmeticService"`. On player character spawn (`Players.PlayerAdded` + `player.CharacterAdded`):
+- [x] **P2** In `src/server/services/CosmeticService.lua`, create a Knit Service named `"CosmeticService"`. On player character spawn (`Players.PlayerAdded` + `player.CharacterAdded`):
   1. Load the player's `OwnedCosmetics` list from `DataService:GetProfile(player)`.
   2. If a vest cosmetic is equipped (stored as e.g. `"Vest_Neon"`): clone the matching `MeshPart` from `ReplicatedStorage.Assets.Cosmetics.Vests[vestName]`. Parent it to the character's `UpperTorso`. Weld it with a `WeldConstraint` to `UpperTorso`. Apply to all clients via `Remotes.CosmeticData:FireAllClients(player, cosmeticData)`.
   3. Assign the player a whistle pitch index (`1` through `8`) based on join order. Store in `_pitchAssignments[player.UserId]`. Include in `cosmeticData`.
 
-- [ ] **P2** In `src/client/controllers/CosmeticController.lua`, create a Knit Controller named `"CosmeticController"`. On `KnitStart`:
+- [x] **P2** In `src/client/controllers/CosmeticController.lua`, create a Knit Controller named `"CosmeticController"`. On `KnitStart`:
   - Listen to `Remotes.CosmeticData` with args `(targetPlayer: Player, data)`. Apply the vest mesh for `targetPlayer`'s character locally (already done server-side; this ensures late-joining clients see others' cosmetics).
   - Store the local player's assigned `pitchIndex` from their `CosmeticData`. In `WhistleController`, the whistle SFX `Pitch` is set to `0.75 + (pitchIndex - 1) * 0.0357` (maps indices 1–8 linearly from pitch 0.75 to 1.0).
   - Listen to `Remotes.DashTrailVFX` (UnreliableRemoteEvent) with args `(player, trailAssetName)`: clone the trail `Attachment`+`Trail` from `ReplicatedStorage.Assets.Cosmetics.Trails[trailAssetName]` into the target player's character `HumanoidRootPart`.

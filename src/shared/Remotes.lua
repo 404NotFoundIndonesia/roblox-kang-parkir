@@ -50,6 +50,12 @@ local REMOTE_DEFS: { [string]: string } = {
 	QTEResult     = "RemoteEvent", -- (vehicleId, success)
 	ReadyUp       = "RemoteEvent", -- ()
 
+	-- ── Syndicate (bidirectional) ────────────────────────────────────────────────
+	SyndicateCreate = "RemoteEvent", -- C→S (name: string)
+	SyndicateJoin   = "RemoteEvent", -- C→S (syndicateId: string)
+	SyndicateLeave  = "RemoteEvent", -- C→S ()
+	SyndicateData   = "RemoteEvent", -- S→C ({ syndicateId, name, members, weeklyEarnings } | nil)
+
 	-- ── Client → Server (unreliable / high-frequency) ───────────────────────
 	DragPositionUpdate = "UnreliableRemoteEvent", -- (vehicleId, desiredCFrame)
 }

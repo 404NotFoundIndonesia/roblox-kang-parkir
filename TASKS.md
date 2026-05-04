@@ -463,19 +463,19 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 15. Syndicate System
 
-- [ ] **P3** In `src/server/services/SyndicateService.lua`, create a Knit Service named `"SyndicateService"`. Store syndicates in a DataStore `"SyndicateStore"` as a table keyed by `syndicateId`: `{ name, members: {userId}, weeklyEarnings, bannerReward }`. Max 8 members per syndicate enforced on `JoinSyndicate`.
+- [x] **P3** In `src/server/services/SyndicateService.lua`, create a Knit Service named `"SyndicateService"`. Store syndicates in a DataStore `"SyndicateStore"` as a table keyed by `syndicateId`: `{ name, members: {userId}, weeklyEarnings, bannerReward }`. Max 8 members per syndicate enforced on `JoinSyndicate`.
 
-- [ ] **P3** In `SyndicateService`, expose `CreateSyndicate(player, name) -> syndicateId | nil`: fails if player already in a syndicate. Creates entry, adds player as first member.
+- [x] **P3** In `SyndicateService`, expose `CreateSyndicate(player, name) -> syndicateId | nil`: fails if player already in a syndicate. Creates entry, adds player as first member.
 
-- [ ] **P3** In `SyndicateService`, expose `JoinSyndicate(player, syndicateId) -> success: boolean`: fails if player already in syndicate or syndicate is full.
+- [x] **P3** In `SyndicateService`, expose `JoinSyndicate(player, syndicateId) -> success: boolean`: fails if player already in syndicate or syndicate is full.
 
-- [ ] **P3** In `SyndicateService`, expose `LeaveSyndicate(player) -> ()`.
+- [x] **P3** In `SyndicateService`, expose `LeaveSyndicate(player) -> ()`.
 
-- [ ] **P3** In `SyndicateService`, in `EconomyService:AddPayout`, before firing the client event: check if the paying player is in a syndicate and if any syndicate member's zone is adjacent (zones are adjacent if their bounding boxes share an edge within 0.5 stud tolerance). If true, multiply the final payout by `1.05` before adding.
+- [x] **P3** In `SyndicateService`, in `EconomyService:AddPayout`, before firing the client event: check if the paying player is in a syndicate and if any syndicate member's zone is adjacent (zones are adjacent if their bounding boxes share an edge within 0.5 stud tolerance). If true, multiply the final payout by `1.05` before adding.
 
-- [ ] **P3** In `SyndicateService`, run a weekly reset on the first server start after Monday 00:00 UTC: compare `os.date("!*t")` weekday. Identify top 3 syndicates by `weeklyEarnings`. Call `CosmeticService:GrantBannerReward(memberUserId, syndicateId)` for each member of top 3. Reset all `weeklyEarnings` to 0.
+- [x] **P3** In `SyndicateService`, run a weekly reset on the first server start after Monday 00:00 UTC: compare `os.date("!*t")` weekday. Identify top 3 syndicates by `weeklyEarnings`. Call `CosmeticService:GrantBannerReward(memberUserId, syndicateId)` for each member of top 3. Reset all `weeklyEarnings` to 0.
 
-- [ ] **P3** In `src/client/controllers/SyndicateController.lua`, create a Knit Controller. On `KnitStart`: request syndicate data from server on join, populate `SyndicateGui` with member list and `weeklyEarnings` contribution bar. Bind create/join/leave buttons to their respective server remotes.
+- [x] **P3** In `src/client/controllers/SyndicateController.lua`, create a Knit Controller. On `KnitStart`: request syndicate data from server on join, populate `SyndicateGui` with member list and `weeklyEarnings` contribution bar. Bind create/join/leave buttons to their respective server remotes.
 
 ---
 

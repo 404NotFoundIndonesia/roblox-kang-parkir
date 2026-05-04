@@ -69,6 +69,13 @@ function EconomyService:AddPayout(player: Player, amount: number)
 	local uid = player.UserId
 	if _unbanked[uid] == nil then return end
 
+	-- Syndicate adjacency bonus: +5% if any member's zone is adjacent.
+	local okS, SyndicateService = pcall(Knit.GetService, Knit, "SyndicateService")
+	if okS and SyndicateService and SyndicateService:GetAdjacentBonus(player) then
+		amount = math.floor(amount * 1.05)
+		SyndicateService:RecordEarning(player, amount)
+	end
+
 	_unbanked[uid] += amount
 	Remotes.PayoutReceived:FireClient(player, amount, _unbanked[uid])
 end

@@ -211,37 +211,37 @@ Each task is one atomic unit of work. Done = the described behavior is verifiabl
 
 ## 6. Vehicle Drag (Street Tetris)
 
-- [ ] **P1** In `src/server/services/DragService.lua`, create a Knit Service named `"DragService"`. Maintain `_activeDrags` dictionary keyed by `vehicleId`: `{ player, alignConstraint, posConstraint, startTime }`.
+- [x] **P1** In `src/server/services/DragService.lua`, create a Knit Service named `"DragService"`. Maintain `_activeDrags` dictionary keyed by `vehicleId`: `{ player, alignConstraint, posConstraint, startTime }`.
 
-- [ ] **P1** In `DragService`, connect `Remotes.DragStart.OnServerEvent` with args `(player, vehicleId: string)`:
+- [x] **P1** In `DragService`, connect `Remotes.DragStart.OnServerEvent` with args `(player, vehicleId: string)`:
   1. Reject if `VehicleService:GetState(vehicleId) ~= "AtEntrance"` — fire `Remotes.DragStart:FireClient(player, vehicleId, false, "NOT_AT_ENTRANCE")`.
   2. Reject if `ZoneService:GetZoneOwner(player's zone) ~= player` — fire fail reason `"NOT_OWNER"`.
   3. Reject if `_activeDrags[vehicleId]` already exists — fire fail reason `"ALREADY_DRAGGED"`.
   4. On pass: call `VehicleService:SetDragging(vehicleId, player)`. Unanchor all `BasePart`s in the vehicle model. Create an `AlignPosition` constraint between vehicle `PrimaryPart` and player `HumanoidRootPart`, set `MaxForce = 10000`, `Responsiveness = 50`. Create an `AlignOrientation` constraint, `MaxTorque = 10000`, `Responsiveness = 25`. Set `RigidityEnabled = false` on both. Add both constraints to `_activeDrags[vehicleId]`. Set vehicle model's parts to `CollisionGroup = "DraggedVehicles"`. Fire `Remotes.DragStart:FireClient(player, vehicleId, true)`.
 
-- [ ] **P1** In `DragService`, connect `Remotes.DragConfirm.OnServerEvent` with args `(player, vehicleId: string, desiredCFrame: CFrame)`:
+- [x] **P1** In `DragService`, connect `Remotes.DragConfirm.OnServerEvent` with args `(player, vehicleId: string, desiredCFrame: CFrame)`:
   1. Reject if `_activeDrags[vehicleId] == nil` or `_activeDrags[vehicleId].player ~= player`.
   2. Reject if `desiredCFrame.Position` is outside the player's zone bounds — call `ZoneService:IsInZone(zone, desiredCFrame.Position)`. If false, fire fail reason `"OUT_OF_BOUNDS"` (vehicle stays in dragging state; player must try again).
   3. On pass: destroy both constraints. Re-anchor vehicle. Set `PrimaryPart.CFrame = desiredCFrame`. Set parts to `CollisionGroup = "ParkedVehicles"`. Call `VehicleService:SetParked(vehicleId, player, desiredCFrame)`. Compute `alignmentBonus` (see task below). Call `EconomyService:AddPayout(player, EconomyService:CalculatePayout(vehicleType, alignmentBonus, currentEventMultiplier, 0))`. Remove from `_activeDrags`. Fire `Remotes.PayoutReceived:FireClient(player, payoutAmount)`.
 
-- [ ] **P1** In `DragService`, implement `_ComputeAlignmentBonus(vehicleId: string) -> number`: get the placed vehicle's `PrimaryPart.CFrame.LookVector`. Use `workspace:GetPartBoundsInBox(vehicleCFrame, vehicleSize * 1.2, overlapParams)` to find adjacent parked vehicles. For each adjacent vehicle whose `PrimaryPart.CFrame.LookVector:Dot(thisLookVector) >= Constants.AlignmentDotThreshold`, increment an aligned count. Return `math.min(alignedCount * 5, Constants.AlignmentBonusMax)`.
+- [x] **P1** In `DragService`, implement `_ComputeAlignmentBonus(vehicleId: string) -> number`: get the placed vehicle's `PrimaryPart.CFrame.LookVector`. Use `workspace:GetPartBoundsInBox(vehicleCFrame, vehicleSize * 1.2, overlapParams)` to find adjacent parked vehicles. For each adjacent vehicle whose `PrimaryPart.CFrame.LookVector:Dot(thisLookVector) >= Constants.AlignmentDotThreshold`, increment an aligned count. Return `math.min(alignedCount * 5, Constants.AlignmentBonusMax)`.
 
-- [ ] **P1** In `DragService`, on every `RunService.Heartbeat`, for each entry in `_activeDrags`: read `vehicle.PrimaryPart.AssemblyAngularVelocity.Magnitude`. If it exceeds `Constants.TipOverThreshold`:
+- [x] **P1** In `DragService`, on every `RunService.Heartbeat`, for each entry in `_activeDrags`: read `vehicle.PrimaryPart.AssemblyAngularVelocity.Magnitude`. If it exceeds `Constants.TipOverThreshold`:
   1. Destroy both constraints. Call `VehicleService:ReturnToTraffic(vehicleId)` — vehicle physics simulate freely.
   2. Call `EconomyService:ApplyPenalty(player, vehicleBasePayout * Constants.TipOverPenaltyPct)`.
   3. Run domino check: `workspace:GetPartBoundsInRadius(primaryPart.Position, Constants.TipOverDominoRadius, overlapParams)` filtering to `CollisionGroup = "ParkedVehicles"`. For each hit vehicle, apply `BasePart:ApplyImpulse(Vector3.new(0, 200, 0))` to dislodge it.
   4. Remove from `_activeDrags`.
   5. Fire `Remotes.PenaltyApplied:FireClient(player, penaltyAmount)`.
 
-- [ ] **P1** In `src/client/controllers/DragController.lua`, create a Knit Controller named `"DragController"`. On `KnitStart`, detect proximity to vehicles in state `"AtEntrance"` using a `RunService.Heartbeat` loop: cast `workspace:GetPartBoundsInRadius(hrp.Position, 5, params)`. If a valid vehicle is nearby, show `ProximityPrompt` or action button highlight for the Interact button.
+- [x] **P1** In `src/client/controllers/DragController.lua`, create a Knit Controller named `"DragController"`. On `KnitStart`, detect proximity to vehicles in state `"AtEntrance"` using a `RunService.Heartbeat` loop: cast `workspace:GetPartBoundsInRadius(hrp.Position, 5, params)`. If a valid vehicle is nearby, show `ProximityPrompt` or action button highlight for the Interact button.
 
-- [ ] **P1** In `DragController`, on Interact input while near a vehicle at entrance: fire `Remotes.DragStart:FireServer(vehicleId)`. Wait for `Remotes.DragStart` callback with matching vehicleId. On success: enter drag visual mode — show spatial grid overlay (`ReplicatedStorage.Assets.VFX.GridOverlay` Part made visible in the player's zone). Begin sending `Remotes.DragPositionUpdate:FireServer(vehicleId, desiredCFrame)` every `Heartbeat` while dragging using `UnreliableRemoteEvent`. On fail: show reason in screen UI for 2 seconds.
+- [x] **P1** In `DragController`, on Interact input while near a vehicle at entrance: fire `Remotes.DragStart:FireServer(vehicleId)`. Wait for `Remotes.DragStart` callback with matching vehicleId. On success: enter drag visual mode — show spatial grid overlay (`ReplicatedStorage.Assets.VFX.GridOverlay` Part made visible in the player's zone). Begin sending `Remotes.DragPositionUpdate:FireServer(vehicleId, desiredCFrame)` every `Heartbeat` while dragging using `UnreliableRemoteEvent`. On fail: show reason in screen UI for 2 seconds.
 
-- [ ] **P1** In `DragController`, on Interact release while in drag mode: fire `Remotes.DragConfirm:FireServer(vehicleId, currentDesiredCFrame)`. Hide grid overlay. Exit drag mode regardless of server confirmation (server will re-enter drag mode if confirmation is rejected).
+- [x] **P1** In `DragController`, on Interact release while in drag mode: fire `Remotes.DragConfirm:FireServer(vehicleId, currentDesiredCFrame)`. Hide grid overlay. Exit drag mode regardless of server confirmation (server will re-enter drag mode if confirmation is rejected).
 
-- [ ] **P2** In `DragController`, if the confirmed vehicle type is `"Supercar"`: after server fires `Remotes.QTEPrompt:FireClient()`, display a QTE UI (`StarterGui/QTEHUD`) showing a button sequence (3 buttons, randomized). Player has 3 seconds. On success, fire `Remotes.QTEResult:FireServer(vehicleId, true)`. On timeout or wrong input, fire `Remotes.QTEResult:FireServer(vehicleId, false)`.
+- [x] **P2** In `DragController`, if the confirmed vehicle type is `"Supercar"`: after server fires `Remotes.QTEPrompt:FireClient()`, display a QTE UI (`StarterGui/QTEHUD`) showing a button sequence (3 buttons, randomized). Player has 3 seconds. On success, fire `Remotes.QTEResult:FireServer(vehicleId, true)`. On timeout or wrong input, fire `Remotes.QTEResult:FireServer(vehicleId, false)`.
 
-- [ ] **P2** In `DragService`, connect `Remotes.QTEResult.OnServerEvent` with args `(player, vehicleId, success: boolean)`: if vehicle is `"Supercar"` and `success = false`, multiply the payout by `0.5` before calling `EconomyService:AddPayout`.
+- [x] **P2** In `DragService`, connect `Remotes.QTEResult.OnServerEvent` with args `(player, vehicleId, success: boolean)`: if vehicle is `"Supercar"` and `success = false`, multiply the payout by `0.5` before calling `EconomyService:AddPayout`.
 
 ---
 
